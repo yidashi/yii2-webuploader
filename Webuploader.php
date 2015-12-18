@@ -60,6 +60,12 @@ var uploader = WebUploader.create({
             innerHTML:'<div>选择文件</div>'
         },
 
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        },
+        
         // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
         resize: false
     });
