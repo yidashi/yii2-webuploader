@@ -20,7 +20,7 @@ class Webuploader extends InputWidget{
     {
         parent::init();
         $this->options['boxId'] = isset($this->options['boxId']) ? $this->options['boxId'] : 'picker';
-        $this->options['innerHTML'] = isset($this->options['innerHTML']) ? $this->options['innerHTML'] :'<button class="btn btn-primary">选择文件</button>'；
+        $this->options['innerHTML'] = isset($this->options['innerHTML']) ? $this->options['innerHTML'] :'<button class="btn btn-primary">选择文件</button>';
         $this->options['previewWidth'] = isset($this->options['previewWidth']) ? $this->options['previewWidth'] : '250';
         $this->options['previewHeight'] = isset($this->options['previewHeight']) ? $this->options['previewHeight'] : '150';
     }
@@ -41,7 +41,7 @@ class Webuploader extends InputWidget{
     private function registerClientJs()
     {
         WebuploaderAsset::register($this->view);
-        $web = \Yii::getAlias('@web');
+        $web = \Yii::getAlias('@static');
         $server = $this->server ?: Url::to(['webupload']);
         $swfPath = \Yii::getAlias('@common/widgets/webuploader/assets');
         $this->view->registerJs(<<<JS
