@@ -19,15 +19,27 @@ class Webuploader extends InputWidget{
     public function init()
     {
         parent::init();
+        \Yii::setAlias('@webuploader', __DIR__);
+        // 初始化@static别名,默认@web/static,最好根据自己的需求提前设置好@static别名
+        $static = \Yii::getAlias('@static', false);
+        if (!$static) {
+            \Yii::setAlias('@static', '@web/static');
+        }
         $this->options['boxId'] = isset($this->options['boxId']) ? $this->options['boxId'] : 'picker';
-        $this->options['innerHTML'] = isset($this->options['innerHTML']) ? $this->options['innerHTML'] :'<button class="btn btn-primary">选择文件</button>'；
+        $this->options['innerHTML'] = isset($this->options['innerHTML']) ? $this->options['innerHTML'] : '<button class="btn btn-primary">选择文件</button>';
         $this->options['previewWidth'] = isset($this->options['previewWidth']) ? $this->options['previewWidth'] : '250';
         $this->options['previewHeight'] = isset($this->options['previewHeight']) ? $this->options['previewHeight'] : '150';
     }
     public function run()
     {
         $this->registerClientJs();
-        $content = $this->model[$this->attribute] ? Html::img(\Yii::getAlias('@web') . '/' . $this->model[$this->attribute], ['width'=>$this->options['previewWidth'],'height'=>$this->options['previewHeight']]) : '选择文件';
+        $value = Html::getAttributeValue($this->model, $this->attribute);
+        $content = $value ?
+            Html::img(
+                strpos($value, 'http:') === false ? (\Yii::getAlias('@static') . '/' . $value) : $value,
+                ['width'=>$this->options['previewWidth'],'height'=>$this->options['previewHeight']]
+            ) :
+            $this->options['innerHTML'];
         if($this->hasModel()){
             return Html::tag('div', $content, ['id'=>$this->options['boxId']]) . Html::activeHiddenInput($this->model, $this->attribute);
         }else{
@@ -41,13 +53,13 @@ class Webuploader extends InputWidget{
     private function registerClientJs()
     {
         WebuploaderAsset::register($this->view);
-        $web = \Yii::getAlias('@web');
-        $server = $this->server ?: Url::to(['webupload']);
-        $swfPath = \Yii::getAlias('@common/widgets/webuploader/assets');
+        $web = \Yii::getAlias('@static');
+        $server = $this->server ?: Url::to(['/site/webupload']);
+        $swfPath = \Yii::getAlias('@webuploader/assets');
         $this->view->registerJs(<<<JS
 var uploader = WebUploader.create({
         auto: true,
-        fileVal: 'upfile',
+        fileVal: 'webUploaderFile',
         // swf文件路径
         swf: '{$swfPath}/Uploader.swf',
 
@@ -56,10 +68,7 @@ var uploader = WebUploader.create({
 
         // 选择文件的按钮。可选。
         // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-        pick: {
-            id:'#{$this->options['boxId']}',
-            innerHTML:'{$this->options['innerHTML']}'
-        },
+        pick: '#{$this->options['boxId']}',
 
         accept: {
             title: 'Images',
