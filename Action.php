@@ -79,7 +79,7 @@ class Action extends \yii\base\Action
 
     private function qiniu()
     {
-        $this->config = array_merge($this->config, Yii::$app->params['qiniu']);
+        $this->config = array_merge($this->config, Yii::$app->params['webuploader_qiniu_config']);
         $bucket = $this->config['bucket'];
         $accessKey = $this->config['accessKey'];
         $secretKey = $this->config['secretKey'];

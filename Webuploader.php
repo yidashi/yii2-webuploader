@@ -33,7 +33,7 @@ class Webuploader extends InputWidget{
             }
         } else if ($this->driver == 'qiniu') {
             if (empty($this->domain)) {
-                $this->domain = \Yii::$app->params['qiniu']['domain'];
+                $this->domain = \Yii::$app->params['webuploader_qiniu_config']['domain'];
             }
             if (empty($this->domain)) {
                 throw new Exception('七牛上传方式必须设置根域名');
