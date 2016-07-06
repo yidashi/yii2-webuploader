@@ -47,7 +47,7 @@ class Webuploader extends InputWidget{
     public function run()
     {
         call_user_func([$this, 'register' . ucfirst($this->driver) . 'ClientJs']);
-        $value = Html::getAttributeValue($this->model, $this->attribute);
+        $value = $this->value;
         $content = $value ?
             Html::img(
                 strpos($value, 'http:') === false ? (\Yii::getAlias('@static') . '/' . $value) : $value,
