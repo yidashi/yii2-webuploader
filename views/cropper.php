@@ -146,7 +146,7 @@
             },
 
             crop: function( data ) {
-console.log(data)
+
                 var scale = Croper.getImageSize().width / file._info.width;
                 data.scale = scale;
 
@@ -225,7 +225,7 @@ console.log(data)
                     $('#cropperModal').modal('show');
                     image.attr('src', src);
                     image.cropper({
-                        viewMode:3,
+                        viewMode:1,
                         dragMode:'move',
                         aspectRatio: {$options['previewWidth']} / {$options['previewHeight']},
                         done: function(data) {
