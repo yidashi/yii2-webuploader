@@ -18,10 +18,14 @@ class Webuploader extends InputWidget{
     public $server;
     public $domain;
     public $driver;
+
+    protected $hiddenInput;
+
     public function init()
     {
         parent::init();
         \Yii::setAlias('@webuploader', __DIR__);
+        $this->server = $this->server ?: Url::to(['/site/webupload']);
         if (empty($this->driver)) {
             $this->driver = isset(\Yii::$app->params['webuploader_driver']) ? \Yii::$app->params['webuploader_driver'] : 'local';
         }
@@ -40,26 +44,28 @@ class Webuploader extends InputWidget{
             }
         }
         $this->options['boxId'] = isset($this->options['boxId']) ? $this->options['boxId'] : 'picker';
-        $this->options['innerHTML'] = isset($this->options['innerHTML']) ? $this->options['innerHTML'] : '<button class="btn btn-primary">选择文件</button>';
         $this->options['previewWidth'] = isset($this->options['previewWidth']) ? $this->options['previewWidth'] : '250';
         $this->options['previewHeight'] = isset($this->options['previewHeight']) ? $this->options['previewHeight'] : '150';
+        if($this->hasModel()){
+            $this->hiddenInput = Html::activeHiddenInput($this->model, $this->attribute);
+        }else{
+            $this->hiddenInput = Html::hiddenInput($this->name, $this->value);
+        }
     }
     public function run()
     {
         call_user_func([$this, 'register' . ucfirst($this->driver) . 'ClientJs']);
-        $value = $this->value;
-        $content = $value ?
-            Html::img(
+        $value = $this->hasModel() ? Html::getAttributeValue($this->model, $this->attribute) : $this->value;
+        // 已经传过图片,显示预览图
+        $image = $value ? Html::img(
                 strpos($value, 'http:') === false ? (\Yii::getAlias('@static') . '/' . $value) : $value,
                 ['width'=>$this->options['previewWidth'],'height'=>$this->options['previewHeight']]
-            ) :
-            $this->options['innerHTML'];
-        $content .= '<div class="uploader-list"></div>';
-        if($this->hasModel()){
-            return Html::tag('div', $content, ['id'=>$this->options['boxId']]) . Html::activeHiddenInput($this->model, $this->attribute);
-        }else{
-            return Html::tag('div', $content, ['id'=>$this->options['boxId']]) . Html::hiddenInput($this->name, $this->value);
-        }
+        ) : '';
+        return $this->render('main', [
+            'boxId' => $this->options['boxId'],
+            'hiddenInput' => $this->hiddenInput,
+            'image' => $image
+        ]);
     }
 
     /**
@@ -69,7 +75,7 @@ class Webuploader extends InputWidget{
     {
         WebuploaderAsset::register($this->view);
         $web = \Yii::getAlias('@static');
-        $server = $this->server ?: Url::to(['/site/webupload']);
+        $server = $this->server;
         $swfPath = \Yii::getAlias('@webuploader/assets');
         $this->view->registerJs(<<<JS
 var uploader = WebUploader.create({

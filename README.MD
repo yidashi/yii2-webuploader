@@ -3,12 +3,12 @@
 composer require yidashi/yii2-webuploader:"*"
 ```
 ## 2.使用  
->直接使用
+> 直接使用
   
 ```
 <?= \yidashi\webuploader\Webuploader::widget(['name' => 'xxx', 'options'=>['boxId' => 'picker', 'previewWidth'=>200, 'previewHeight'=>150]])?>
 ```
->或者在activeForm里使用
+> 或者在activeForm里使用
   
 ```
 <?= $form->field($model,'attributeName')->widget('yidashi\webuploader\Webuploader',['options'=>['boxId' => 'picker', 'previewWidth'=>200, 'previewHeight'=>150]]); ?>
@@ -28,3 +28,9 @@ public function actions()
 ```
 <?= $form->field($model,'attributeName')->widget('yidashi\webuploader\Webuploader',['server'=>'你自己的处理路由']); ?>
 ```
+> 带裁剪功能
+
+`yidashi\webuploader\Webuploader` 替换成 `yidashi\webuploader\Cropper`
+
+
+写的很烂,凑合能用
