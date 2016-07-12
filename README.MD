@@ -20,7 +20,7 @@ options非必填
 public function actions()
 {
     return [
-        'webupload' => 'yidashi\webuploader\WebuploaderAction'
+        'webupload' => 'yidashi\webuploader\Action'
     ];
 }
 ```  
