@@ -2,7 +2,14 @@
 ```
 composer require yidashi/yii2-webuploader:"*"
 ```
-## 2.使用  
+## 2.使用
+
+需要两个别名
+
+a.`@static` 访问上传图片的域名,默认`@web/static`
+
+b.`@staticroot` 图片保存路径,默认`@webroot/static`
+
 > 直接使用
   
 ```

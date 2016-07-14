@@ -136,11 +136,12 @@
 
                     }, FRAME_WIDTH, 1 );   // 注意这里的 height 值是 1，被当成了 100% 使用。
                 }).on('uploadSuccess', function(file, data) {
+                    var url = '{$web}/' + data.url;
                     $( '#'+file.id ).find('p.state').text('上传成功').fadeOut();
                     uploaderContainer.removeClass('webuploader-element-invisible');
                     $('.cropper-wraper').addClass('webuploader-element-invisible');
-                    $( '#{$options['boxId']} .webuploader-pick' ).html('<img src="{$web}/'+data.url+'" width="{$options['previewWidth']}" height="{$options['previewHeight']}"/>');
-                    $( '#{$options['id']}' ).val(data.url);
+                    $( '#{$options['boxId']} .webuploader-pick' ).html('<img src="'+url+'" width="{$options['previewWidth']}" height="{$options['previewHeight']}"/>');
+                    $( '#{$options['id']}' ).val(url);
                     $( '#{$options['boxId']} .webuploader-pick' ).siblings('div').width("{$options['previewWidth']}").height("{$options['previewHeight']}");
                 });
             },

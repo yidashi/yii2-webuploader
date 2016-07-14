@@ -16,7 +16,6 @@ class Webuploader extends InputWidget{
     //默认配置
     protected $_options;
     public $server;
-    public $domain;
     public $driver;
 
     protected $hiddenInput;
@@ -32,8 +31,10 @@ class Webuploader extends InputWidget{
         if ($this->driver == 'local') {
             // 初始化@static别名,默认@web/static,最好根据自己的需求提前设置好@static别名
             $static = \Yii::getAlias('@static', false);
-            if (!$static) {
+            $staticroot = \Yii::getAlias('@staticroot', false);
+            if (!$static || !$staticroot) {
                 \Yii::setAlias('@static', '@web/static');
+                \Yii::setAlias('@staticroot', '@webroot/static');
             }
         } else if ($this->driver == 'qiniu') {
             if (empty($this->domain)) {
@@ -74,7 +75,7 @@ class Webuploader extends InputWidget{
     private function registerLocalClientJs()
     {
         WebuploaderAsset::register($this->view);
-        $web = \Yii::getAlias('@static');
+        $web = rtrim(\Yii::getAlias('@static'), '/');
         $server = $this->server;
         $swfPath = \Yii::getAlias('@webuploader/assets');
         $this->view->registerJs(<<<JS
@@ -116,9 +117,10 @@ uploader.on( 'uploadProgress', function( file, percentage ) {
 });
 // 完成上传完了，成功或者失败，先删除进度条。
 uploader.on( 'uploadSuccess', function( file, data ) {
+    var url = '{$web}/' + data.url;
     $( '#'+file.id ).find('p.state').text('上传成功').fadeOut();
-    $( '#{$this->options['boxId']} .webuploader-pick' ).html('<img src="{$web}/'+data.url+'" width="{$this->options['previewWidth']}" height="{$this->options['previewHeight']}"/>');
-    $( '#{$this->options['id']}' ).val(data.url);
+    $( '#{$this->options['boxId']} .webuploader-pick' ).html('<img src="'+url+'" width="{$this->options['previewWidth']}" height="{$this->options['previewHeight']}"/>');
+    $( '#{$this->options['id']}' ).val(url);
     $( '#{$this->options['boxId']} .webuploader-pick' ).siblings('div').width("{$this->options['previewWidth']}").height("{$this->options['previewHeight']}");
 });
 JS
@@ -133,6 +135,7 @@ JS
         WebuploaderAsset::register($this->view);
         $tokenUrl = $this->server ?: Url::to(['/site/webupload']);
         $swfPath = \Yii::getAlias('@webuploader/assets');
+        $domain = rtrim(\Yii::$app->params['webuploader_qiniu_config']['domain'], '/');
         $this->view->registerJs(<<<JS
 $.get("{$tokenUrl}",function(res) {
     var uploader = WebUploader.create({
@@ -178,9 +181,9 @@ uploader.on( 'uploadProgress', function( file, percentage ) {
 });
     // 完成上传完了，成功或者失败，先删除进度条。
     uploader.on( 'uploadSuccess', function( file, data ) {
-        var url = data.key;
+        var url = '{$domain}/' + data.key;
         $( '#'+file.id ).find('p.state').text('上传成功').fadeOut();
-        $( '#{$this->options['boxId']} .webuploader-pick' ).html('<img src="{$this->domain}'+url+'" width="{$this->options['previewWidth']}" height="{$this->options['previewHeight']}"/>');
+        $( '#{$this->options['boxId']} .webuploader-pick' ).html('<img src="'+url+'" width="{$this->options['previewWidth']}" height="{$this->options['previewHeight']}"/>');
         $( '#{$this->options['id']}' ).val(url);
         $( '#{$this->options['boxId']} .webuploader-pick' ).siblings('div').width("{$this->options['previewWidth']}").height("{$this->options['previewHeight']}");
     });

@@ -31,7 +31,7 @@ class Cropper extends WebUploader
 	 */
 	public function run()
 	{
-        $web = \Yii::getAlias('@static');
+        $web = rtrim(\Yii::getAlias('@static'), '/');
         $value = $this->hasModel() ? Html::getAttributeValue($this->model, $this->attribute) : $this->value;
         $image = $value ? Html::img(
             strpos($value, 'http:') === false ? (\Yii::getAlias('@static') . '/' . $value) : $value,
