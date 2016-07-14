@@ -36,13 +36,6 @@ class Webuploader extends InputWidget{
                 \Yii::setAlias('@static', '@web/static');
                 \Yii::setAlias('@staticroot', '@webroot/static');
             }
-        } else if ($this->driver == 'qiniu') {
-            if (empty($this->domain)) {
-                $this->domain = \Yii::$app->params['webuploader_qiniu_config']['domain'];
-            }
-            if (empty($this->domain)) {
-                throw new Exception('七牛上传方式必须设置根域名');
-            }
         }
         $this->options['boxId'] = isset($this->options['boxId']) ? $this->options['boxId'] : 'picker';
         $this->options['previewWidth'] = isset($this->options['previewWidth']) ? $this->options['previewWidth'] : '250';
