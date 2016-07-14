@@ -16,13 +16,14 @@ use yii\helpers\Html;
  *
  * @author Shiyang <dr@shiyang.me>
  */
-class Cropper extends WebUploader
+class Cropper extends Webuploader
 {
 	/**
 	 * @inheritdoc
 	 */
 	public function init()
 	{
+        $this->driver = 'local';
 		parent::init();
 	}
 

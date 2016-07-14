@@ -24,7 +24,6 @@ class Webuploader extends InputWidget{
     {
         parent::init();
         \Yii::setAlias('@webuploader', __DIR__);
-        $this->server = $this->server ?: Url::to(['/site/webupload']);
         if (empty($this->driver)) {
             $this->driver = isset(\Yii::$app->params['webuploader_driver']) ? \Yii::$app->params['webuploader_driver'] : 'local';
         }
@@ -37,6 +36,7 @@ class Webuploader extends InputWidget{
                 \Yii::setAlias('@staticroot', '@webroot/static');
             }
         }
+        $this->server = $this->server ?: Url::to(['/site/webupload', 'driver' => $this->driver]);
         $this->options['boxId'] = isset($this->options['boxId']) ? $this->options['boxId'] : 'picker';
         $this->options['previewWidth'] = isset($this->options['previewWidth']) ? $this->options['previewWidth'] : '250';
         $this->options['previewHeight'] = isset($this->options['previewHeight']) ? $this->options['previewHeight'] : '150';
